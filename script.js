@@ -1,6 +1,14 @@
+ const supabaseUrl = "https://jlnbezpewkuqrwmcljdv.supabase.co/rest/v1/";
+const supabaseKey = "sb_publishable_9mvDqyktUkE0JfMAJv7ukA_sJXNFxdz";
 
-/* ============================== DATA MODEL (ported 1:1 from the React version) ============================== */
- 
+ supabase = window.supabase.createClient(supabaseUrl,supabaseKey);
+console.log("Supabase connected:",supabase);
+const { data } = supabase
+  .storage
+  .from("study-materials")
+  .getPublicUrl("javabook%20(1).pdf");
+
+console.log("PDF URL:", data.publicUrl);
 const hash = (str) => {
   let h = 0;
   for (let i = 0; i < str.length; i++) h = (Math.imul(h, 31) + str.charCodeAt(i)) >>> 0;
@@ -401,7 +409,7 @@ function renderHeader() {
   <header class="site-header">
     <div class="wrap header-inner">
       <button class="brand" data-action="go-home">
-<span class="brand-mark">${icon("mark", 18, "color:#fff")}</span>        <span class="font-display brand-name">StudyNest</span>
+<span class="brand-mark">${icon("mark", 18, "color:#fff")}</span>        <span class="font-display brand-name">lumos-reparo</span>
       </button>
       <nav class="main-nav">
         <button data-action="go-home" class="nav-link ${state.page === "home" ? "active" : ""}">Home</button>
@@ -989,7 +997,7 @@ function renderFooter() {
         <div class="flex items-center" style="gap:8px;">
         <span class="brand-mark">${icon("mark", 17, "color:#fff")}</span>
           <span class="brand-mark" style="width:32px;height:32px;">${icon("cap", 15, "color:#fff")}</span>
-          <span class="font-display" style="font-size:18px;">StudyNest</span>
+          <span class="font-display" style="font-size:18px;">lumos-reparo</span>
         </div>
         <p>Everything you need. One organised place.<br><br>Built for Us the Students to Access the Resources to Our Academic(;<br> <br>
           The Scattered Resources In Google classroom,Whatsapp,Drive,etc.. Is Now At One Place <br> <br>All You Need To do is Log in To access the Resources/Pdf<br><br> </p><h3>There is No Right <i>"Time"</i>To Start.. Get Started Now !! </h3>
@@ -1034,7 +1042,7 @@ but then again, most good things are.</span>
         </div>
       </div>
     </div>
-    <div class="footer-bottom">©Copyright StudyNest · A study-material sharing platform created by Pooja and the team As our 2nd yr Mini Project </div>
+    <div class="footer-bottom">©Copyright lumos-reparo · A study-material sharing platform created by Pooja and the team As our 2nd yr Mini Project </div>
   </footer>`;
 }
  
