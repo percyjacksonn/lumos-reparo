@@ -99,38 +99,49 @@ const CURRICULUM = {
   },
   "cse-5": {
     subjects: [
-      { name: "Data Structures",               code: "CS30991", credits: 4 },
-      { name: "Database Management Systems",    code: "CS302", credits: 4 },
-      { name: "Java Programming",               code: "CS303", credits: 3 },
-      { name: "Computer Organization",          code: "CS304", credits: 4 },
-      { name: "Engineering Mathematics III",    code: "MA301", credits: 4 },
+      { name: "Computer Networks",               code: "CS3591", credits: 4 },
+      { name: " Compiler Design ",    code: "CS3501", credits: 4 },
+      { name: " Cryptography and Cyber Security",               code: "CB3491", credits: 3 },
+      { name: "Compiler Design Laboratory ",          code: "CS3551", credits: 4 },
+      { name: "Distributed Computing",          code: "CS3551", credits: 4 },
+      { name: "Computer Networks Laboratory",          code: "CS3561", credits: 4 },
+      { name: "Professional Elective I",     credits: 4 },
+      { name: "Professional Elective II",     credits: 4 },
     ],
   },
   "cse-6": {
     subjects: [
-      { name: "Data Structures",               code: "CS30991", credits: 4 },
-      { name: "Database Management Systems",    code: "CS302", credits: 4 },
-      { name: "Java Programming",               code: "CS303", credits: 3 },
-      { name: "Computer Organization",          code: "CS304", credits: 4 },
-      { name: "Engineering Mathematics III",    code: "MA301", credits: 4 },
+      { name: "Embedded Systems and IoT",               code: "CS3691", credits: 4 },
+      { name: "Software Engineering",    code: "CS3601", credits: 4 },
+      { name: "Artificial Intelligence & Machine Learningg",               code: "CS3651", credits: 3 },  { name: "Professional Elective I",     credits: 4 },
+      { name: "Open Elective I",     credits: 4 },
+  { name: "Professional Elective III",     credits: 4 },
+      { name: "Professional Elective IV",     credits: 4 },
+      { name: "Software Engineering Laboratory / Mini Project",          code: "CS3611", credits: 4 },
+
+      { name: "Artificial Intelligence & Machine Learning Laboratory",    code: "CS3661", credits: 4 },
     ],
   },
   "cse-7": {
     subjects: [
-      { name: "Data Structures",               code: "CS30991", credits: 4, teachers: ["Dr. Priya Sharma"] },
-      { name: "Database Management Systems",    code: "CS302", credits: 4, teachers: ["Dr. Priya Sharma", "Mrs. Kavitha Reddy"] },
-      { name: "Java Programming",               code: "CS303", credits: 3, teachers: ["Mr. Arun Kumar"] },
-      { name: "Computer Organization",          code: "CS304", credits: 4, teachers: ["Dr. Sneha Iyer"] },
-      { name: "Engineering Mathematics III",    code: "MA301", credits: 4, teachers: ["Dr. Ramesh Nair"] },
+      { name: "Human Values and Ethics",               code: "GE3751", credits: 4, teachers: ["Dr. Priya Sharma"] },
+      { name: " Principles of Management  ",    code: "GE3752", credits: 4, teachers: ["Dr. Priya Sharma", "Mrs. Kavitha Reddy"] },
+      { name: "Total Quality Management",               code: "GE3753", credits: 3, teachers: ["Mr. Arun Kumar"] },
+      { name: " Engineering Economics and Financial Accounting  ",          code: "CS304", credits: 4, teachers: ["Dr. Sneha Iyer"] },
+      { name: "Human Resource Management",    code: "GE3754", credits: 4, teachers: ["Dr. Ramesh Nair"] },      
+      { name: "Open Elective II",     credits: 4 },
+      { name: "Open Elective II",     credits: 4 },
+      { name: "Open Elective IV",     credits: 4 },     
+       { name: " Summer Internship (carried out after Sem 6)   I",     credits: 4 },
+
+
     ],
   },
   "cse-8": {
     subjects: [
-      { name: "Data Structures",               code: "CS30991", credits: 4, teachers: ["Dr. Priya Sharma"] },
-      { name: "Database Management Systems",    code: "CS302", credits: 4, teachers: ["Dr. Priya Sharma", "Mrs. Kavitha Reddy"] },
-      { name: "Java Programming",               code: "CS303", credits: 3, teachers: ["Mr. Arun Kumar"] },
-      { name: "Computer Organization",          code: "CS304", credits: 4, teachers: ["Dr. Sneha Iyer"] },
-      { name: "Engineering Mathematics III",    code: "MA301", credits: 4, teachers: ["Dr. Ramesh Nair"] },
+             { name: " Project Work / Project Work cum Internship",     credits: 4 },
+
+      
     ],
   },
   
