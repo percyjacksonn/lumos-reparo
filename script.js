@@ -1,20 +1,33 @@
- const supabaseUrl = "https://jlnbezpewkuqrwmcljdv.supabase.co/rest/v1/";
+/* ==============================================================
+   SUPABASE SETUP
+   FIX: the original supabaseUrl had "/rest/v1/" appended to it,
+   which breaks supabase-js (storage/auth calls need the bare
+   project URL). Use just the project URL below.
+================================================================= */
+const supabaseUrl = "https://jlnbezpewkuqrwmcljdv.supabase.co";
 const supabaseKey = "sb_publishable_9mvDqyktUkE0JfMAJv7ukA_sJXNFxdz";
 
- supabase = window.supabase.createClient(supabaseUrl,supabaseKey);
-console.log("Supabase connected:",supabase);
-const { data } = supabase
-  .storage
-  .from("study-materials")
-  .getPublicUrl("javabook%20(1).pdf");
+supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+console.log("Supabase connected:", supabase);
 
-console.log("PDF URL:", data.publicUrl);
+// Name of the bucket you created in Supabase → Storage
+const SUPABASE_BUCKET = "study-materials";
+
+// Turns a file path inside the bucket into a public URL.
+// Only works if the bucket (or the file's folder) is set to Public.
+// If you made the bucket Private, swap this for createSignedUrl() instead.
+function getPublicFileUrl(path) {
+  if (!path) return null;
+  const { data } = supabase.storage.from(SUPABASE_BUCKET).getPublicUrl(path);
+  return data ? data.publicUrl : null;
+}
+
 const hash = (str) => {
   let h = 0;
   for (let i = 0; i < str.length; i++) h = (Math.imul(h, 31) + str.charCodeAt(i)) >>> 0;
   return h;
 };
- 
+
 const DEPARTMENTS = [
   { id: "cse", name: "CSE", full: "Computer Science & Engineering", icon: "cpu", blurb: "Notes, PYQs, labs and more for every CS core.", accent: "coral" },
   { id: "ece", name: "ECE", full: "Electronics & Communication Engineering", icon: "radio", blurb: "Circuits, signals and communication, sorted by unit.", accent: "sky" },
@@ -24,7 +37,7 @@ const DEPARTMENTS = [
   { id: "it", name: "AI & ML", full: "Artificial Intelligence & Machine Learning", icon: "globe", blurb: "Web, networks and databases, semester by semester.", accent: "sun" },
   { id: "bme", name: "BME", full: "Biomedical Engineering", icon: "activity", blurb: "Instrumentation and physiology notes, all verified.", accent: "leaf" },
 ];
- 
+
 const GENERIC_SUBJECTS = [
   "Engineering Mathematics", "Engineering Physics", "Engineering Chemistry", "Basic Electrical Engineering",
   "Programming Fundamentals", "Environmental Science", "Data Structures", "Operating Systems",
@@ -35,7 +48,7 @@ const GENERIC_SUBJECTS = [
   "Structural Analysis", "Surveying", "Concrete Technology", "Biomedical Instrumentation",
   "Discrete Mathematics", "Probability & Statistics",
 ];
- 
+
 const TEACHERS = [
   "Dr. Priya Sharma", "Mrs. Kavitha Reddy", "Mr. Arun Kumar", "Dr. Sneha Iyer",
   "Mr. Rahul Verma", "Dr. Ramesh Nair", "Ms. Anjali Rao", "Dr. Vikram Sethi",
@@ -147,7 +160,118 @@ const CURRICULUM = {
   
   // "ece-5": { subjects: [ { name: "...", code: "EC501", credits: 4, teachers: ["..."] }, ... ] },
 };
- 
+  const REAL_RESOURCES = {
+  "cse-3": [
+    // ===== Data Structures & Algorithm (subjectIndex 0) =====
+    {
+      subjectIndex: 0,
+      type: "teacher-notes",
+      unit: 1,
+      teacher: "Mrs.R.Meenakshiammal",
+      title: "Unit 1 Notes",
+      filePath: "cse/sem3/dsa/typing%20certificate.pdf",
+    },
+    {
+      subjectIndex: 0,
+      type: "teacher-notes",
+      unit: 2,
+      teacher: "Mrs.R.Meenakshiammal",
+      title: "Unit 2 Notes",
+      filePath: "cse/sem3/dsa/unit2-notes.pdf",
+    },
+    {
+      subjectIndex: 0,
+      type: "important",
+      unit: 1,
+      teacher: "Mrs.R.Meenakshiammal",
+      title: "Unit 1 Important Questions",
+      filePath: "cse/sem3/dsa/unit1-important-questions.pdf",
+    },
+    {
+      subjectIndex: 0,
+      type: "pyq",
+      unit: null,              // PYQs aren't unit-specific, so unit is null
+      teacher: "Mrs.R.Meenakshiammal",
+      title: "DSA 2024 Question Paper",
+      filePath: "cse/sem3/dsa/dsa-2024-qp.pdf",
+    },
+
+    // ===== Database Management Systems (subjectIndex 1) =====
+    {
+      subjectIndex: 1,
+      type: "teacher-notes",
+      unit: 1,
+      teacher: "Mrs.Sindhuja",
+      title: "Unit 1 Notes",
+      filePath: "cse/sem3/dbms/unit1-notes.pdf",
+    },
+    {
+      subjectIndex: 1,
+      type: "question-bank",
+      unit: null,
+      teacher: "Mrs.Sindhuja",
+      title: "DBMS Question Bank",
+      filePath: "cse/sem3/dbms/dbms-question-bank.pdf",
+    },
+    {
+      subjectIndex: 1,
+      type: "assignment",
+      unit: 3,
+      teacher: "Mrs.Sindhuja",
+      title: "Unit 3 Assignment",
+      filePath: "cse/sem3/dbms/unit3-assignment.pdf",
+    },
+
+    // ===== Microprocessors... (subjectIndex 2) =====
+    {
+      subjectIndex: 2,
+      type: "lab",
+      unit: null,              // labs generally aren't unit-specific either
+      teacher: "Mrs.R.Thazleema Banu",
+      title: "Microprocessors Lab Manual",
+      filePath: "cse/sem3/mpmc/lab-manual.pdf",
+    },
+
+    // ===== OOPS using Java Programming (subjectIndex 3) =====
+    {
+      subjectIndex: 3,
+      type: "teacher-notes",
+      unit: 1,
+      teacher: "Dr.R.Sahila Devi",
+      title: "Unit 1 Notes",
+      filePath: "javabook (1).pdf",   // your existing sample file
+    },
+    {
+      subjectIndex: 3,
+      type: "syllabus",
+      unit: null,
+      teacher: "Dr.R.Sahila Devi",
+      title: "OOPS Java Syllabus",
+      filePath: "cse/sem3/oops/syllabus.pdf",
+    },
+
+    // ===== Computer Architecture and Organization (subjectIndex 4) =====
+    {
+      subjectIndex: 4,
+      type: "reference",
+      unit: null,
+      teacher: "Mrs.Anushlin Leena",
+      title: "Computer Architecture Reference Notes",
+      filePath: "cse/sem3/coa/reference-notes.pdf",
+    },
+
+    // ===== Probability, random Process and Statistics (subjectIndex 5) =====
+    {
+      subjectIndex: 5,
+      type: "teacher-notes",
+      unit: 1,
+      teacher: "Dr.P.C.Priyanaka Nair",
+      title: "Unit 1 Notes",
+      filePath: "cse/sem3/probability/unit1-notes.pdf",
+    },
+  ],
+}; 
+
 const CATEGORIES = [
   { key: "teacher-notes", label: "Teacher Notes", emoji: "📚", desc: "Lecture and handwritten notes by faculty" },
   { key: "pyq", label: "Previous Year Papers", emoji: "📄", desc: "Solved and unsolved question papers" },
@@ -159,7 +283,7 @@ const CATEGORIES = [
   { key: "reference", label: "Reference Resources", emoji: "🔗", desc: "Extra reading picked by toppers" },
 ];
 const CAT_BY_KEY = Object.fromEntries(CATEGORIES.map((c) => [c.key, c]));
- 
+
 const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 const dateFromSeed = (seed) => {
   const h = hash(seed);
@@ -168,7 +292,7 @@ const dateFromSeed = (seed) => {
   return `${monthNames[month]} ${day}`;
 };
 const subjectCode = (deptName, sem, si) => `${deptName.replace(/[^A-Z]/g, "").slice(0, 3)}${sem}0${si + 1}`;
- 
+
 function makeResource({ subjectId, subjectName, type, unit, teacher, title, seed }) {
   const h = hash(seed);
   return {
@@ -178,6 +302,22 @@ function makeResource({ subjectId, subjectName, type, unit, teacher, title, seed
     date: dateFromSeed(seed),
     verified: h % 9 !== 0,
     downloads: 30 + (h % 640),
+    filePath: null, // demo resource — no real file attached
+    url: null,       // demo resource — view/download/copy will show a toast
+  };
+}
+
+// Builds a resource object backed by a REAL file in Supabase Storage.
+function makeRealResource({ subjectId, subjectName, type, unit, teacher, title, filePath, seed }) {
+  return {
+    id: seed,
+    subjectId, subjectName, type, unit, teacher, title,
+    size: null, // unknown client-side; check the file size in the Supabase dashboard if you want to show it
+    date: dateFromSeed(seed),
+    verified: true,
+    downloads: 0,
+    filePath,
+    url: getPublicFileUrl(filePath),
   };
 }
  function buildData() {
@@ -245,6 +385,24 @@ function makeResource({ subjectId, subjectName, type, unit, teacher, title, seed
           if (hash(`${subjectId}lab`) % 2 === 0) {
             resources.push(makeResource({ subjectId, subjectName: name, type: "lab", unit: null, teacher: finalTeachers[0], title: `${name} Lab Manual`, seed: `${subjectId}-lab` }));
           }
+
+          // ==== REAL FILES INJECTION (NEW) ====
+          // If REAL_RESOURCES has entries for this dept-sem + subject index,
+          // add them as extra resource cards with working links.
+          const realKey = `${dept.id}-${sem}`;
+          if (REAL_RESOURCES[realKey]) {
+            REAL_RESOURCES[realKey]
+              .filter((f) => f.subjectIndex === si)
+              .forEach((f, fi) => {
+                resources.push(makeRealResource({
+                  subjectId, subjectName: name,
+                  type: f.type, unit: f.unit, teacher: f.teacher, title: f.title,
+                  filePath: f.filePath,
+                  seed: `${subjectId}-real-${fi}`,
+                }));
+              });
+          }
+
           resources.forEach((r) => (resourcesById[r.id] = r));
 
           subjectsById[subjectId] = { id: subjectId, name, deptId: dept.id, year, sem, code, credits, teachers: finalTeachers, units, resourceIds: resources.map((r) => r.id) };
@@ -258,13 +416,13 @@ function makeResource({ subjectId, subjectName, type, unit, teacher, title, seed
 }
 const DATA = buildData();
 const { subjectsById, resourcesById, byDeptYearSem } = DATA;
- 
+
 const totals = (() => {
   const subjCount = Object.keys(subjectsById).length;
   const resCount = Object.keys(resourcesById).length;
   return { subjCount, resCount };
 })();
- 
+
 function deptTotals(deptId) {
   let s = 0, r = 0;
   Object.values(subjectsById).forEach((sub) => { if (sub.deptId === deptId) { s++; r += sub.resourceIds.length; } });
@@ -280,7 +438,7 @@ function groupByUnit(list) {
 function esc(str) {
   return String(str ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 }
- 
+
 /* ============================== ICONS (small hand-authored SVG set, lucide-esque) ============================== */
 const ICONS = {
   search: '<path d="M11 19a8 8 0 1 0 0-16 8 8 0 0 0 0 16Z"/><path d="m21 21-4.3-4.3"/>',
@@ -318,9 +476,9 @@ linkedin: '<rect x="3" y="3" width="18" height="18" rx="2"/><path d="M7.5 10v7M7
 function icon(name, size = 16, extra = "") {
   return `<svg class="ic icon" width="${size}" height="${size}" viewBox="0 0 24 24" style="${extra}">${ICONS[name] || ""}</svg>`;
 }
- 
+
 /* ============================== STATE ============================== */
- 
+
 const state = {
   page: "home",
   nav: { deptId: null, year: null, sem: null, subjectId: null, category: null, teacherId: null },
@@ -334,7 +492,8 @@ const state = {
   toast: null,
 };
 let toastTimer = null;
- 
+let uploadedFile = null; // holds the File object chosen in the upload form
+
 function setState(patch) {
   Object.assign(state, patch);
   render();
@@ -345,7 +504,7 @@ function showToast(msg) {
   toastTimer = setTimeout(() => { state.toast = null; render(); }, 2400);
   render();
 }
- 
+
 function goHome() { setState({ page: "home", nav: { deptId: null, year: null, sem: null, subjectId: null, category: null, teacherId: null }, mobileMenuOpen: false }); scrollTop(); }
 function goBrowse() { setState({ page: "browse", nav: { deptId: null, year: null, sem: null, subjectId: null, category: null, teacherId: null }, mobileMenuOpen: false }); scrollTop(); }
 function setPage(p) { setState({ page: p, mobileMenuOpen: false }); scrollTop(); }
@@ -365,7 +524,7 @@ function backToLevel(level) {
   render(); scrollTop();
 }
 function scrollTop() { window.scrollTo({ top: 0, behavior: "auto" }); }
- 
+
 function openResource(id) {
   state.activeResourceId = id;
   state.recent = [id, ...state.recent.filter((x) => x !== id)].slice(0, 6);
@@ -376,16 +535,43 @@ function toggleSave(id) {
   else { state.saved.add(id); showToast("Saved for later"); }
   render();
 }
-function downloadResource(title) { showToast(`Downloading "${title}"…`); }
+
+// ==== VIEW / DOWNLOAD / COPY LINK (NEW — these now do real things) ====
+function viewResource(id) {
+  const r = resourcesById[id];
+  if (!r || !r.url) { showToast("This is a demo card — no real file attached yet"); return; }
+  window.open(r.url, "_blank", "noopener");
+}
+function downloadResource(id) {
+  const r = resourcesById[id];
+  if (!r || !r.url) { showToast("This is a demo card — no real file attached yet"); return; }
+  const a = document.createElement("a");
+  a.href = r.url;
+  a.download = r.title || "file";
+  a.target = "_blank";
+  a.rel = "noopener";
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  showToast(`Downloading "${r.title}"…`);
+}
+function copyResourceLink(id) {
+  const r = resourcesById[id];
+  if (!r || !r.url) { showToast("This is a demo card — no real file attached yet"); return; }
+  navigator.clipboard.writeText(r.url)
+    .then(() => showToast("Link copied to clipboard"))
+    .catch(() => showToast("Couldn't copy link"));
+}
+
 function setUnitFilter(v) { state.unitFilter = v; render(); }
- 
+
 function quickCategory(cat) {
   state.page = "browse";
   state.nav = { deptId: "cse", year: 2, sem: 3, subjectId: "cse-y2-s3-1", category: cat, teacherId: null };
   state.unitFilter = "all";
   render(); scrollTop();
 }
- 
+
 function searchResultsFor(q) {
   q = q.trim().toLowerCase();
   if (q.length < 2) return { subjects: [], resources: [], teachers: [] };
@@ -395,7 +581,7 @@ function searchResultsFor(q) {
   TEACHERS.forEach((t) => { if (t.toLowerCase().includes(q)) teacherSet.add(t); });
   return { subjects, resources, teachers: [...teacherSet] };
 }
- 
+
 function goToSubjectFromSearch(id) {
   const s = subjectsById[id];
   state.searchOpen = false; state.searchQuery = "";
@@ -411,9 +597,9 @@ function goToResourceFromSearch(id) {
   state.page = "browse";
   openResource(id);
 }
- 
+
 /* ============================== RENDER: HEADER ============================== */
- 
+
 function renderHeader() {
   const navItem = (label, page, active) => `<button data-nav-page="${page}" class="nav-link ${active ? "active" : ""}">${label}</button>`;
   return `
@@ -447,9 +633,9 @@ function renderHeader() {
     </div>` : ""}
   </header>`;
 }
- 
+
 /* ============================== RENDER: SEARCH OVERLAY ============================== */
- 
+
 function renderSearchOverlay() {
   if (!state.searchOpen) return "";
   const q = state.searchQuery;
@@ -493,9 +679,9 @@ function renderSearchOverlay() {
     </div>
   </div>`;
 }
- 
+
 /* ============================== RENDER: HOME PAGE ============================== */
- 
+
 function renderHomePage() {
   return `
   <section class="hero">
@@ -519,7 +705,7 @@ function renderHomePage() {
       </div>
     </div>
   </section>
- 
+
   <section class="section wrap">
     <div class="eyebrow">Choose your department</div>
     <h2 class="font-display">Pick your branch to get started</h2>
@@ -536,7 +722,7 @@ function renderHomePage() {
       }).join("")}
     </div>
   </section>
- 
+
   <section class="section wrap">
     <div class="eyebrow">Jump straight in</div>
     <h2 class="font-display">What are you looking for?</h2>
@@ -553,7 +739,7 @@ function renderHomePage() {
       </button>`).join("")}
     </div>
   </section>
- 
+
   <section class="section wrap">
     <div class="eyebrow">Three steps, zero clutter</div>
     <h2 class="font-display">Your Path to The Right Resources</h2>
@@ -571,9 +757,9 @@ function renderHomePage() {
     </div>
   </section>`;
 }
- 
+
 /* ============================== BREADCRUMB ============================== */
- 
+
 function renderBreadcrumb(items) {
   return `<div class="breadcrumb">
     ${items.map((it, i) => `
@@ -582,13 +768,13 @@ function renderBreadcrumb(items) {
     `).join("")}
   </div>`;
 }
- 
+
 /* ============================== BROWSE FLOW ============================== */
- 
+
 function renderBrowsePage() {
   const nav = state.nav;
   const dept = nav.deptId ? deptById(nav.deptId) : null;
- 
+
   if (!nav.deptId) {
     return `
     <div class="wrap" style="padding:40px 0;">
@@ -609,7 +795,7 @@ function renderBrowsePage() {
       </div>
     </div>`;
   }
- 
+
   if (!nav.year) {
     return `
     <div class="wrap" style="padding:40px 0;">
@@ -625,7 +811,7 @@ function renderBrowsePage() {
       </div>
     </div>`;
   }
- 
+
   if (!nav.sem) {
     const semPair = nav.year === 1 ? [1, 2] : nav.year === 2 ? [3, 4] : nav.year === 3 ? [5, 6] : [7, 8];
     const yearLabel = ["First", "Second", "Third", "Fourth"][nav.year - 1] + " Year";
@@ -642,7 +828,7 @@ function renderBrowsePage() {
       </div>
     </div>`;
   }
- 
+
   if (!nav.subjectId) {
     const yearLabel = ["First", "Second", "Third", "Fourth"][nav.year - 1] + " Year";
     const ids = byDeptYearSem[`${dept.id}-${nav.year}-${nav.sem}`] || [];
@@ -673,7 +859,7 @@ function renderBrowsePage() {
       </div>
     </div>`;
   }
- 
+
   const subject = subjectsById[nav.subjectId];
   const yearLabel = ["First", "Second", "Third", "Fourth"][nav.year - 1] + " Year";
   const crumbsBase = [
@@ -682,7 +868,7 @@ function renderBrowsePage() {
     { label: yearLabel, action: "back-to-level", data: { level: "sems" } },
     { label: `Sem ${nav.sem}`, action: "back-to-level", data: { level: "subject" } },
   ];
- 
+
   if (!nav.category) {
     const resources = subject.resourceIds.map((id) => resourcesById[id]);
     return `
@@ -716,7 +902,7 @@ function renderBrowsePage() {
       </div>
     </div>`;
   }
- 
+
   if (nav.category === "teacher-notes" && !nav.teacherId) {
     return `
     <div class="wrap" style="padding:40px 0;">
@@ -738,7 +924,7 @@ function renderBrowsePage() {
       </div>
     </div>`;
   }
- 
+
   if (nav.category === "teacher-notes" && nav.teacherId) {
     const files = subject.resourceIds.map((id) => resourcesById[id]).filter((r) => r.type === "teacher-notes" && r.teacher === nav.teacherId);
     const grouped = groupByUnit(files);
@@ -762,13 +948,13 @@ function renderBrowsePage() {
       </div>
     </div>`;
   }
- 
+
   // generic category resource list
   const cat = CAT_BY_KEY[nav.category];
   const all = subject.resourceIds.map((id) => resourcesById[id]).filter((r) => r.type === nav.category);
   const unitsPresent = [...new Set(all.map((r) => r.unit).filter(Boolean))].sort((a, b) => a - b);
   const filtered = state.unitFilter === "all" ? all : all.filter((r) => r.unit === Number(state.unitFilter));
- 
+
   return `
   <div class="wrap" style="padding:40px 0;">
     ${renderBreadcrumb([...crumbsBase, { label: subject.name, action: "back-to-level", data: { level: "category" } }, { label: cat.label }])}
@@ -783,9 +969,9 @@ function renderBrowsePage() {
       `<div class="grid resource-grid">${filtered.map((r) => renderResourceCard(r)).join("")}</div>`}
   </div>`;
 }
- 
+
 /* ============================== RESOURCE CARD ============================== */
- 
+
 function renderResourceCard(r) {
   const isSaved = state.saved.has(r.id);
   return `
@@ -794,6 +980,7 @@ function renderResourceCard(r) {
       <span class="tags">
         <span class="badge badge-ink">PDF</span>
         ${r.verified ? `<span class="badge badge-leaf">${icon("check", 11)} Verified</span>` : ""}
+        ${!r.url ? `<span class="badge">Demo</span>` : ""}
       </span>
       <button class="heart-btn" data-action="toggle-save" data-id="${esc(r.id)}" aria-label="Save">
         ${isSaved ? icon("heart", 13, "color:#F0523A;fill:#F0523A;") : icon("heart", 13)}
@@ -802,16 +989,16 @@ function renderResourceCard(r) {
     <div class="font-display res-title">${esc(r.title)}</div>
     <div class="res-meta">${esc(r.subjectName)}${r.unit ? ` · Unit ${r.unit}` : ""}</div>
     <div class="res-meta">By ${esc(r.teacher)}</div>
-    <div class="res-meta2">${r.size} MB · Added ${r.date}</div>
+    <div class="res-meta2">${r.size ? r.size + " MB · " : ""}Added ${r.date}</div>
     <div class="res-actions">
       <button class="btn btn-secondary btn-sm" data-action="open-resource" data-id="${esc(r.id)}">${icon("eye", 13)} View</button>
-      <button class="btn btn-primary btn-sm" data-action="open-resource" data-id="${esc(r.id)}">${icon("download", 13)} Download</button>
+      <button class="btn btn-primary btn-sm" data-action="download-resource" data-id="${esc(r.id)}">${icon("download", 13)} Download</button>
     </div>
   </div>`;
 }
- 
+
 /* ============================== RESOURCE MODAL ============================== */
- 
+
 function renderResourceModal() {
   if (!state.activeResourceId) return "";
   const resource = resourcesById[state.activeResourceId];
@@ -820,7 +1007,7 @@ function renderResourceModal() {
   const related = subject.resourceIds.map((id) => resourcesById[id])
     .filter((r) => r.id !== resource.id && (r.type === resource.type || r.unit === resource.unit)).slice(0, 3);
   const isSaved = state.saved.has(resource.id);
- 
+
   return `
   <div class="modal-overlay" data-action="close-modal">
     <div class="modal-panel" onclick="event.stopPropagation()">
@@ -842,17 +1029,18 @@ function renderResourceModal() {
           ${infoBlock("Semester", `Sem ${subject.sem}`)}
           ${infoBlock("Contributor", resource.teacher)}
           ${infoBlock("Uploaded", resource.date)}
-          ${infoBlock("File size", `${resource.size} MB`)}
+          ${infoBlock("File size", resource.size ? `${resource.size} MB` : "—")}
           ${infoBlock("Downloads", resource.downloads)}
         </div>
         <p class="modal-desc">${cat.desc}. Reviewed for accuracy before publishing so you can revise with confidence.</p>
         <div class="preview-box">
           ${icon("fileText", 28, "color:var(--ink-66)")}
-          <span>PDF preview opens in viewer</span>
+          <span>${resource.url ? "Tap Open PDF to view in a new tab" : "Demo card — no real file attached yet"}</span>
         </div>
         <div class="modal-actions">
-          <button class="btn btn-primary" data-action="download-resource" data-title="${esc(resource.title)}">${icon("eye", 15)} Open PDF</button>
-          <button class="btn btn-secondary" data-action="download-resource" data-title="${esc(resource.title)}">${icon("download", 15)} Download</button>
+          <button class="btn btn-primary" data-action="view-resource" data-id="${esc(resource.id)}">${icon("eye", 15)} Open PDF</button>
+          <button class="btn btn-secondary" data-action="download-resource" data-id="${esc(resource.id)}">${icon("download", 15)} Download</button>
+          <button class="btn btn-secondary" data-action="copy-link" data-id="${esc(resource.id)}">${icon("clipboard", 15)} Copy Link</button>
           <button class="save-toggle ${isSaved ? "active" : ""}" data-action="toggle-save" data-id="${esc(resource.id)}">
             ${isSaved ? icon("heart", 16, "color:#F0523A;fill:#F0523A;") : icon("heart", 16)}
           </button>
@@ -874,14 +1062,14 @@ function renderResourceModal() {
 function infoBlock(label, value) {
   return `<div><div class="info-label">${label}</div><div class="info-value">${esc(value)}</div></div>`;
 }
- 
+
 /* ============================== UPLOAD PAGE ============================== */
- 
+
 let uploadSubmitted = false;
- 
+
 function renderUploadPage() {
   const resourceTypes = ["Teacher Notes", "Handwritten Notes", "PYQ", "Important Questions", "Question Bank", "Assignment", "Lab Material", "Reference Material"];
- 
+
   if (uploadSubmitted) {
     return `
     <div class="upload-success">
@@ -894,7 +1082,7 @@ function renderUploadPage() {
       </div>
     </div>`;
   }
- 
+
   return `
   <div class="upload-wrap">
     <div class="eyebrow">Give back to your batch</div>
@@ -921,9 +1109,13 @@ function renderUploadPage() {
       </div>
       <div class="field">
         <label>Upload PDF</label>
-        <div class="dropzone">
+        <!-- FIX: the real <input type="file"> and the ids the JS listens on
+             ("dropzone" / "pdf-input" / "dropzone-text") were missing from
+             the markup before, so choosing/dropping a file never did anything. -->
+        <div class="dropzone" id="dropzone">
+          <input type="file" id="pdf-input" accept="application/pdf" style="display:none" />
           ${icon("upload", 20, "color:var(--ink-80)")}
-          <span>Drag a PDF here, or tap to choose a file</span>
+          <span id="dropzone-text">Drag a PDF here, or tap to choose a file</span>
         </div>
       </div>
       <p class="form-note">All uploaded resources are reviewed before being published.</p>
@@ -937,9 +1129,9 @@ function fieldHTML(label, type, placeholder, required) {
 function selectHTML(label, options) {
   return `<div class="field"><label>${label}</label><select>${options.map((o) => `<option>${esc(o)}</option>`).join("")}</select></div>`;
 }
- 
+
 /* ============================== DASHBOARD / SAVED ============================== */
- 
+
 function renderDashboardPage() {
   const savedList = [...state.saved].map((id) => resourcesById[id]).filter(Boolean);
   const recentList = state.recent.map((id) => resourcesById[id]).filter(Boolean);
@@ -971,7 +1163,7 @@ function renderDashboardPage() {
     </div>
   </div>`;
 }
- 
+
 function renderSavedPage() {
   const list = [...state.saved].map((id) => resourcesById[id]).filter(Boolean);
   return `
@@ -982,9 +1174,9 @@ function renderSavedPage() {
       `<div class="grid resource-grid" style="margin-top:24px;">${list.map((r) => renderResourceCard(r)).join("")}</div>`}
   </div>`;
 }
- 
+
 /* ============================== SHARED BITS ============================== */
- 
+
 function renderEmptyState(title, body, actionLabel, actionKey) {
   return `
   <div class="empty-state">
@@ -994,12 +1186,12 @@ function renderEmptyState(title, body, actionLabel, actionKey) {
     ${actionLabel ? `<div class="empty-action"><button class="btn btn-primary" data-action="${actionKey}">${actionLabel}</button></div>` : ""}
   </div>`;
 }
- 
+
 function renderToast() {
   if (!state.toast) return "";
   return `<div class="toast">${esc(state.toast)}</div>`;
 }
- 
+
 function renderFooter() {
   return `
   <footer class="site-footer">
@@ -1056,9 +1248,9 @@ but then again, most good things are.</span>
     <div class="footer-bottom">©Copyright lumos-reparo · A study-material sharing platform created by Pooja and the team As our 2nd yr Mini Project </div>
   </footer>`;
 }
- 
+
 /* ============================== ROOT RENDER ============================== */
- 
+
 function render() {
   let pageHTML = "";
   if (state.page === "home") pageHTML = renderHomePage();
@@ -1066,7 +1258,7 @@ function render() {
   else if (state.page === "upload") pageHTML = renderUploadPage();
   else if (state.page === "dashboard") pageHTML = renderDashboardPage();
   else if (state.page === "saved") pageHTML = renderSavedPage();
- 
+
   const html = `
     ${renderHeader()}
     ${renderSearchOverlay()}
@@ -1077,7 +1269,7 @@ function render() {
   `;
   const app = document.getElementById("app");
   app.innerHTML = html;
- 
+
   // restore focus to search input if the overlay is open (innerHTML replace loses focus)
   if (state.searchOpen) {
     const input = document.getElementById("search-input");
@@ -1089,10 +1281,14 @@ function render() {
     }
   }
 }
- 
+
 /* ============================== EVENT DELEGATION ============================== */
- 
+
 document.addEventListener("click", (e) => {
+  // Click-to-browse on the upload dropzone (NEW — opens the real file picker)
+  const zone = e.target.closest("#dropzone");
+  if (zone) { document.getElementById("pdf-input").click(); return; }
+
   const el = e.target.closest("[data-action]");
   if (!el) return;
   const action = el.getAttribute("data-action");
@@ -1110,7 +1306,10 @@ document.addEventListener("click", (e) => {
     case "back-to-level": backToLevel(el.getAttribute("data-level")); break;
     case "open-resource": openResource(el.getAttribute("data-id")); break;
     case "toggle-save": toggleSave(el.getAttribute("data-id")); break;
-    case "download-resource": downloadResource(el.getAttribute("data-title")); break;
+    // ==== CHANGED: these now open/download/copy the REAL file (see functions above) ====
+    case "view-resource": viewResource(el.getAttribute("data-id")); break;
+    case "download-resource": downloadResource(el.getAttribute("data-id")); break;
+    case "copy-link": copyResourceLink(el.getAttribute("data-id")); break;
     case "set-unit-filter": setUnitFilter(el.getAttribute("data-unit")); break;
     case "quick-category": quickCategory(el.getAttribute("data-category")); break;
     case "open-search": setState({ searchOpen: true }); break;
@@ -1120,18 +1319,17 @@ document.addEventListener("click", (e) => {
     case "search-goto-subject": goToSubjectFromSearch(el.getAttribute("data-id")); break;
     case "search-goto-resource": goToResourceFromSearch(el.getAttribute("data-id")); break;
     case "goto-upload": setPage("upload"); break;
-    case "upload-another": uploadSubmitted = false; render(); break;
+    case "upload-another": uploadSubmitted = false; uploadedFile = null; render(); break;
     default: break;
   }
 });
- 
+
 document.addEventListener("input", (e) => {
   if (e.target && e.target.id === "search-input") {
     state.searchQuery = e.target.value;
     render();
   }
 });
- let uploadedFile = null;
 
 document.addEventListener("change", (e) => {
   if (e.target && e.target.id === "pdf-input") {
@@ -1165,14 +1363,73 @@ document.addEventListener("drop", (e) => {
     showToast("Please drop a PDF file");
   }
 });
-document.addEventListener("submit", (e) => {
+
+// ==== CHANGED: submit handler now actually uploads the file to Supabase Storage ====
+document.addEventListener("submit", async (e) => {
   const form = e.target.closest('[data-action="submit-upload"]');
-  if (form) {
-    e.preventDefault();
-    uploadSubmitted = true;
-    showToast("Upload received — thank you!");
+  if (!form) return;
+  e.preventDefault();
+
+  if (!uploadedFile) {
+    showToast("Please choose a PDF file first");
+    return;
   }
+
+  const submitBtn = form.querySelector('button[type="submit"]');
+  const originalLabel = submitBtn ? submitBtn.innerHTML : "";
+  if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = "Uploading..."; }
+
+  // Build a unique, safe path inside the bucket.
+  // Everything goes in an "uploads/" folder for now so it's easy to find
+  // and move into REAL_RESOURCES once you've reviewed it.
+  const cleanName = uploadedFile.name.replace(/\s+/g, "_");
+  const filePath = `uploads/${Date.now()}_${cleanName}`;
+
+  const { error: uploadError } = await supabase.storage
+    .from(SUPABASE_BUCKET)
+    .upload(filePath, uploadedFile);
+
+  if (uploadError) {
+    showToast("Upload failed: " + uploadError.message);
+    if (submitBtn) { submitBtn.disabled = false; submitBtn.innerHTML = originalLabel; }
+    return;
+  }
+
+  // ==== OPTIONAL: SAVE METADATA TO A DATABASE TABLE ====
+  // Right now the file lands in Storage but nothing records who uploaded it,
+  // for which subject, etc. To track that, create a table once in the
+  // Supabase SQL editor:
+  //
+  //   create table files (
+  //     id uuid primary key default gen_random_uuid(),
+  //     file_name text not null,
+  //     file_path text not null,
+  //     file_url text not null,
+  //     department text, year text, semester text,
+  //     subject text, teacher text, unit text, resource_type text,
+  //     title text, description text,
+  //     uploaded_by text,
+  //     status text default 'pending', -- for moderation
+  //     created_at timestamp default now()
+  //   );
+  //
+  // Then uncomment this block to save the form's details alongside the file:
+  //
+  // const inputs = form.querySelectorAll("input[type=text], select, textarea");
+  // const [contributor, subjectField, teacherField] = form.querySelectorAll('input[type="text"]');
+  // await supabase.from("files").insert([{
+  //   file_name: cleanName,
+  //   file_path: filePath,
+  //   file_url: getPublicFileUrl(filePath),
+  //   uploaded_by: contributor ? contributor.value : null,
+  //   status: "pending",
+  // }]);
+
+  uploadedFile = null;
+  uploadSubmitted = true;
+  showToast("Upload received — thank you!");
+  render();
 });
- 
+
 /* ============================== INIT ============================== */
 render();
